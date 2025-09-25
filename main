@@ -1,0 +1,69 @@
+""" 
+Program Language: 
+Python 
+
+Development System: 
+Visual Studio Code 
+
+Team Members: 
+Xavian Kimbrough, Rashmika Srivastava, Hamida Mohamed 
+
+Dates: 
+09/23 09/24 
+Date Submitted: 
+
+
+Class: 
+4500 - Software Profession 
+
+Explanation of Program: 
+
+
+Sources: 
+
+
+External Files: 
+
+"""
+
+def programexplaining():
+    print("""
+            This program will do several things.
+            First, it will ask for a file name. The file MUST end in '.txt'.
+            Upon reading the file, it will seperate every word, based entirely on whitespaces. 
+            Words can only have letters and hyphens.
+            Then it will ask the user this up to 10 times unless the user says no or it reaches the limited amount of times.
+            The program will then prompt you for a word.
+            The program will then inform you of the amount of times that your word appears.
+            The program is not case sensitive.
+            The program will then ask you if you wish to repeat.
+            If you don't, it will present a summary and terminate.
+            """)
+    
+# This function will check ask for 10 files and check if it ends in .txt, non case sensitive. 
+def inputtextfile():
+    file_path = []
+    max = 10 
+
+    while len(file_path) < max: 
+        file_name = ""
+        while not file_name.endswith(".txt"):
+            file_name = input("Please input text file name: ").lower()
+            # print(file_name)
+            if not file_name.endswith(".txt"):
+                print("Invalid must end with .txt")
+
+        file_path.append(file_name)
+
+        if len(file_path) < max:
+            add_another = input("Do you want to add another file? [yes/no]: ").lower()
+            if add_another == 'no': 
+               break 
+            elif add_another != 'yes': 
+                print("Invalid Input. Please enter 'yes' or 'no'.")
+    
+    return file_path
+
+
+programexplaining()
+inputtextfile()

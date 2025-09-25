@@ -1,3 +1,5 @@
+import os 
+
 """ 
 Program Language: 
 Python 
@@ -52,7 +54,11 @@ def inputtextfile():
             # print(file_name)
             if not file_name.endswith(".txt"):
                 print("Invalid must end with .txt")
-
+            if file_name in file_path:
+                print("File already exists.")
+            # if not os.path.exists(file_name):
+            #      print("File does not exists.")
+                
         file_path.append(file_name)
 
         if len(file_path) < max:
@@ -64,6 +70,14 @@ def inputtextfile():
     
     return file_path
 
+def readFiles(file_path):
+    
+    for file_name in file_path:
+        file = open(file_name, "r")
+
+
+
 
 programexplaining()
-inputtextfile()
+file_path = inputtextfile()
+readFiles(file_path)

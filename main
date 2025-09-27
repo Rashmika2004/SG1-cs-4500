@@ -1,5 +1,3 @@
-import os 
-
 """ 
 Program Language: 
 Python 
@@ -28,6 +26,8 @@ External Files:
 
 """
 
+import string
+import os
 def programexplaining():
     print("""
             This program will do several things.
@@ -71,9 +71,31 @@ def inputtextfile():
     return file_path
 
 def readFiles(file_path):
-    
-    for file_name in file_path:
-        file = open(file_name, "r")
+    Word_Checker = string.ascii_letters + '-' 
+    ListOfWords = []
+    for file in file_path:
+            if file == Word_Checker and file != string.ascii_letters + " -" and  string.ascii_letters + " - " and string.ascii_letters + "- ":
+                for file_name in file_path:
+                    with open(file_name, "r") as f:
+                        extracted_words = f.read().split()
+                        ListOfWords.append(extracted_words) 
+
+
+
+     
+
+                file_path()
+    return ListOfWords
+
+ 
+
+
+
+
+
+"""READ FILE and EXTRACT words
+HANDLE hyphenated word rules
+STORE WORDS in ListofWords for that file"""
 
 
 
@@ -81,3 +103,6 @@ def readFiles(file_path):
 programexplaining()
 file_path = inputtextfile()
 readFiles(file_path)
+
+
+

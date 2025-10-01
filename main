@@ -1,108 +1,191 @@
-""" 
-Program Language: 
-Python 
+# Program Language: Python
+# Development System: Visual Studio Code
 
-Development System: 
-Visual Studio Code 
+# Team Members:
+# Xavian Kimbrough, Rashmika Srivastava, Hamida Mohamed
 
-Team Members: 
-Xavian Kimbrough, Rashmika Srivastava, Hamida Mohamed 
+# Dates: 09/23, 09/24
+# Date Submitted: (to be filled before submission)
 
-Dates: 
-09/23 09/24 
-Date Submitted: 
+# Class: 4500 - Software Profession
 
+# Explanation of Program:
+# This program prompts the user to enter up to 10 .txt files, ensuring they are valid and not duplicates.
+# It reads each file, extracts words according to defined rules (case-insensitive, allows hyphenated words),
+# and stores them for further analysis. The user can search for a word to see how many times it appears
+# in each of the files. The program ends by displaying a summary of all searched words and their counts.
 
-Class: 
-4500 - Software Profession 
+# Sources:
+# Python documentation for string and os modules
+# Stack Overflow discussions for text processing and file validation
 
-Explanation of Program: 
-
-
-Sources: 
-
-
-External Files: 
-
-"""
+# External Files:
+# Up to 10 user-specified .txt files stored in the same directory as the script
 
 import string
 import os
+
 def programexplaining():
     print("""
-            This program will do several things.
-            First, it will ask for a file name. The file MUST end in '.txt'.
-            Upon reading the file, it will seperate every word, based entirely on whitespaces. 
-            Words can only have letters and hyphens.
-            Then it will ask the user this up to 10 times unless the user says no or it reaches the limited amount of times.
-            The program will then prompt you for a word.
-            The program will then inform you of the amount of times that your word appears.
-            The program is not case sensitive.
-            The program will then ask you if you wish to repeat.
-            If you don't, it will present a summary and terminate.
-            """)
-    
-# This function will check ask for 10 files and check if it ends in .txt, non case sensitive. 
+This program will do several things:
+- It will ask you for up to 10 filenames that end with '.txt'.
+- It will read the contents of each file, splitting them into words.
+- A word is a sequence of letters or hyphenated letters.
+- It will then prompt you to search for words and count their occurrences across all files.
+- The program is case-insensitive and handles hyphenated words correctly.
+- At the end, a summary table will be shown with your search history.
+    """)
+
 def inputtextfile():
-    file_path = []
-    max = 10 
+    file_paths = []
+    max_files = 10
 
-    while len(file_path) < max: 
-        file_name = ""
-        while not file_name.endswith(".txt"):
-            file_name = input("Please input text file name: ").lower()
-            # print(file_name)
-            if not file_name.endswith(".txt"):
-                print("Invalid must end with .txt")
-            if file_name in file_path:
-                print("File already exists.")
-            # if not os.path.exists(file_name):
-            #      print("File does not exists.")
-                
-        file_path.append(file_name)
+    while len(file_paths) < max_files:
+        file_name = input("Please input text file name (must end in .txt): ").strip()
 
-        if len(file_path) < max:
-            add_another = input("Do you want to add another file? [yes/no]: ").lower()
-            if add_another == 'no': 
-               break 
-            elif add_another != 'yes': 
-                print("Invalid Input. Please enter 'yes' or 'no'.")
-    
-    return file_path
+        if not file_name.lower().endswith(".txt"):
+            print("Error: File must end in .txt (case insensitive).")
+            continue
 
-def readFiles(file_path):
-    Word_Checker = string.ascii_letters + '-' 
-    ListOfWords = []
-    for file in file_path:
-            if file == Word_Checker and file != string.ascii_letters + " -" and  string.ascii_letters + " - " and string.ascii_letters + "- ":
-                for file_name in file_path:
-                    with open(file_name, "r") as f:
-                        extracted_words = f.read().split()
-                        ListOfWords.append(extracted_words) 
+        if file_name in file_paths:
+            print("Error: You have already added this file.")
+            continue
 
+        if not os.path.isfile(file_name):
+            print("Error: File not found in directory.")
+            continue
 
+        file_paths.append(file_name)
 
-     
+        if len(file_paths) < max_files:
+            while True:
+                more = input("Do you want to add another file? [yes/no]: ").strip().lower()
+                if more in ['yes', 'y']:
+                    break
+                elif more in ['no', 'n']:
+                    return file_paths
+                else:
+                    print("Invalid response. Please enter yes or no.")
 
-                file_path()
-    return ListOfWords
+    return file_paths
 
- 
+def extract_words_from_file(filename):
+    words = []
+    with open(filename, "r", encoding='utf-8') as f:
+        lines = f.readlines()
 
+    buffer = ""
+    for line in lines:
+        line = line.strip()
+        if line.endswith("-") and not line.endswith(" -"):
+            buffer += line[:-1]
+            continue
+        else:
+            buffer += line
 
+        word = ""
+        for char in buffer:
+            if char.isalpha() or char == '-':
+                word += char
+            else:
+                if word:
+                    words.append(word.lower())
+                    word = ""
+        if word:
+            words.append(word.lower())
+        buffer = ""
 
+    return words
 
+def process_files(file_paths):
+    all_words = {}  # { filename: [list of words] }
+    word_stats = {} # { filename: { word: count } }
 
-"""READ FILE and EXTRACT words
-HANDLE hyphenated word rules
-STORE WORDS in ListofWords for that file"""
+    for file in file_paths:
+        words = extract_words_from_file(file)
+        all_words[file] = words
+        stats = {}
+        for word in words:
+            stats[word] = stats.get(word, 0) + 1
+        word_stats[file] = stats
 
+    return all_words, word_stats
 
+def display_file_summary(file_paths, all_words):
+    print("\nFilename".rjust(25) + "  Total Words  Distinct Words")
+    print("-" * 60)
+    for file in file_paths:
+        total = len(all_words[file])
+        distinct = len(set(all_words[file]))
+        print(file.rjust(25) + f"  {str(total).rjust(11)}  {str(distinct).rjust(14)}")
+    print()
 
+def is_valid_word(word):
+    legal_characters = set(string.ascii_letters + '-')
+    if not word:
+        return False, "Word cannot be empty."
+    for idx, char in enumerate(word):
+        if char not in legal_characters:
+            return False, f"Illegal character '{char}' at position {idx + 1}."
+    return True, ""
 
+def prompt_for_word():
+    while True:
+        word = input("Enter a word to search (letters and hyphens only): ").strip()
+        is_valid, message = is_valid_word(word)
+        if is_valid:
+            return word.lower()
+        else:
+            print("Invalid word:", message)
+
+def prompt_yes_no(question):
+    while True:
+        response = input(question + " [yes/no]: ").strip().lower()
+        if response in ['yes', 'y']:
+            return True
+        elif response in ['no', 'n']:
+            return False
+        else:
+            print("Invalid input. Please enter yes, no, y, or n.")
+
+def search_words_loop(file_paths, word_stats):
+    searched_words = []
+    while True:
+        word = prompt_for_word()
+        searched_words.append(word)
+        print(f"\nOccurrences of '{word}':")
+        for file in file_paths:
+            count = word_stats[file].get(word.lower(), 0)
+            print(f"{file.rjust(25)} : {count}")
+        print()
+
+        if not prompt_yes_no("Do you want to enter another word?"):
+            break
+
+    return searched_words
+
+def display_summary(file_paths, word_stats, searched_words):
+    print("\nSummary of all searched words:\n")
+    header = "Word".ljust(20)
+    for file in file_paths:
+        header += file.rjust(20)
+    print(header)
+    print("-" * len(header))
+
+    for word in searched_words:
+        line = word.ljust(20)
+        for file in file_paths:
+            count = word_stats[file].get(word.lower(), 0)
+            line += str(count).rjust(20)
+        print(line)
+
+    print("\nProgram complete. Press ENTER to exit.")
+    input()
+
+# ----------- MAIN PROGRAM EXECUTION --------------
 programexplaining()
-file_path = inputtextfile()
-readFiles(file_path)
-
-
-
+file_paths = inputtextfile()
+all_words, word_stats = process_files(file_paths)
+display_file_summary(file_paths, all_words)
+searched_words = search_words_loop(file_paths, word_stats)
+display_summary(file_paths, word_stats, searched_words)

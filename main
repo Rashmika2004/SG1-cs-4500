@@ -131,7 +131,7 @@ def is_valid_word(word):
 
 def prompt_for_word():
     while True:
-        word = input("Enter a word to search (letters and hyphens only): ").strip()
+        word = input("Enter a word to search (letters and hyphens only): ")
         is_valid, message = is_valid_word(word)
         if is_valid:
             return word.lower()
@@ -141,12 +141,12 @@ def prompt_for_word():
 def prompt_yes_no(question):
     while True:
         response = input(question + " [yes/no]: ").strip().lower()
-        if response in ['yes', 'y']:
+        if response in ['Yes', 'yes', 'y', 'Y]']:
             return True
-        elif response in ['no', 'n']:
+        elif response in ['No', 'no', 'n', 'N']:
             return False
         else:
-            print("Invalid input. Please enter yes, no, y, or n.")
+            print("Invalid input. Please enter The user is allowed to answer Yes, No, yes, no, y, Y, n, or N.")
 
 def search_words_loop(file_paths, word_stats):
     searched_words = []
